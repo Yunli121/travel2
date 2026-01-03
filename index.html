@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORANGE INDUSTRIAL TRAVEL</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --sky-blue: #D6EFFF;
+            --industrial-black: #1A1A1A;
+            --power-orange: #FF6B00;
+            --hard-shadow: 6px 6px 0px #000000;
+        }
+
+        body {
+            background-color: var(--sky-blue);
+            font-family: 'Arial Black', Gadget, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: var(--industrial-black);
+        }
+
+        /* 粗體黑框貼紙風格 */
+        .brutal-card {
+            background: #fff;
+            border: 4px solid var(--industrial-black);
+            box-shadow: var(--hard-shadow);
+            padding: 15px;
+            margin-bottom: 20px;
+            transition: all 0.2s;
+        }
+
+        .brutal-card:active {
+            transform: translate(3px, 3px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        /* 六宮格佈局 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .hero-card {
+            grid-column: span 2;
+            background: var(--power-orange);
+            color: white;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            text-shadow: 3px 3px 0px #000;
+        }
+
+        /* 時間軸與橫向滑動日期 */
+        .date-slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .date-item {
+            min-width: 80px;
+            height: 40px;
+            background: #fff;
+            border: 3px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 3px 3px 0px #000;
+        }
+
+        .date-item.active { background: var(--power-orange); color: white; }
+
+        /* 大按鈕計算機 */
+        .calc-header {
+            background: var(--industrial-black);
+            color: var(--power-orange);
+            padding: 20px;
+            border: 4px solid #000;
+            box-shadow: var(--hard-shadow);
+            margin-bottom: 20px;
+        }
+
+        .calc-display {
+            font-size: 2.5rem;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        /* 全域懸浮按鈕 */
+        .fab {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--power-orange);
+            border: 4px solid #000;
+            border-radius: 50%;
+            box-shadow: 4px 4px 0px #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        /* 底部置中長條按鈕 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: var(--industrial-black);
+            color: white;
+            border: 4px solid #000;
+            box-shadow: var(--hard-shadow);
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            border: 3px solid #000;
+            padding: 10px;
+            font-family: inherit;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 style="text-align: center; font-style: italic;">PLAN : DESTINATION</h1>
+
+    <div class="grid-container">
+        <div class="brutal-card hero-card">行程時間軸</div>
+        <div class="brutal-card" onclick="showPage('calc')">記帳本 ￥</div>
+        <div class="brutal-card" onclick="showPage('pack')">行李清單</div>
+        <div class="brutal-card">伴手禮</div>
+        <div class="brutal-card">旅遊筆記</div>
+    </div>
+
+    <hr style="border: 2px solid #000; margin: 30px 0;">
+
+    <div id="itinerary-section">
+        <div class="date-slider">
+            <div class="date-item active">D1</div>
+            <div class="date-item">D2</div>
+            <div class="date-item">D3</div>
+            <div class="date-item">D4</div>
+            <div class="date-item">D5</div>
+        </div>
+
+        <div class="brutal-card" style="border-left: 15px solid var(--power-orange);">
+            <div style="color: #666;">09:00 AM</div>
+            <div>成田機場接駁</div>
+        </div>
+        <div class="brutal-card" style="border-left: 15px solid var(--industrial-black);">
+            <div style="color: #666;">12:30 PM</div>
+            <div>新宿拉麵一蘭</div>
+        </div>
+    </div>
+
+    <div class="fab" onclick="toggleQuickCalc()">￥</div>
+
+    <div class="bottom-nav" id="mainAddBtn">+ 新增紀錄</div>
+
+    <script>
+        // --- Firebase 設定 ---
+        const firebaseConfig = {
+            apiKey: "你的API_KEY",
+            databaseURL: "你的DATABASE_URL",
+            projectId: "你的PROJECT_ID",
+        };
+        // firebase.initializeApp(firebaseConfig);
+        // const db = firebase.database();
+
+        // 簡易匯率換算邏輯
+        const JPY_RATE = 0.22; // 假設匯率
+        function toggleQuickCalc() {
+            const jpy = prompt("輸入日幣金額:");
+            if(jpy) {
+                const twd = Math.round(jpy * JPY_RATE);
+                alert(`約合台幣: $${twd}`);
+                // 此處可擴充寫入 Firebase
+            }
+        }
+
+        // 動態效果
+        document.getElementById('mainAddBtn').addEventListener('click', () => {
+            alert("正在與 Firebase 同步新項目...");
+        });
+    </script>
+</body>
+</html>
