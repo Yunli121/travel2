@@ -7,36 +7,43 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700;900&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #E0F2FE; color: #1A1A1A; -webkit-tap-highlight-color: transparent; }
-        .neo-brutal { border: 4px solid #000; box-shadow: 6px 6px 0px #000; transition: all 0.1s; cursor: pointer; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #E0F2FE; color: #1A1A1A; overflow-x: hidden; }
+        .neo-brutal { border: 4px solid #000; box-shadow: 6px 6px 0px #000; transition: all 0.1s; cursor: pointer; background-color: white; }
         .neo-brutal:active { box-shadow: 0px 0px 0px #000; transform: translate(4px, 4px); }
-        .page { display: none; animation: fadeIn 0.3s ease-out; }
+        .page { display: none; padding-bottom: 120px; animation: fadeIn 0.3s ease-out; }
         .page-active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .orange-accent { background-color: #FF8A00; }
     </style>
 </head>
-<body class="p-4 pb-28">
+<body class="p-4">
 
     <div id="page-home" class="page page-active">
-        <header class="mb-6"><h1 class="text-4xl font-black italic">PANGUI! 🐶</h1><p class="font-bold text-blue-600">下一站：日本東京</p></header>
+        <header class="mb-6 flex justify-between items-center">
+            <div>
+                <h1 class="text-4xl font-black italic">PANGUI! 🐶</h1>
+                <p class="font-bold text-blue-600">旅程資料已同步 ☁️</p>
+            </div>
+            <div class="neo-brutal orange-accent w-12 h-12 flex items-center justify-center font-black">JP</div>
+        </header>
+        
         <div class="grid grid-cols-2 gap-4">
-            <div onclick="showPage('page-itinerary')" class="col-span-2 neo-brutal bg-white p-6 relative h-40 overflow-hidden">
+            <div onclick="showPage('page-itinerary')" class="col-span-2 neo-brutal p-6 relative h-40 overflow-hidden">
                 <span class="absolute right-[-10px] bottom-[-10px] text-8xl opacity-10">🗾</span>
                 <h2 class="text-2xl font-black">查看行程表</h2>
-                <p class="mt-2 text-orange-600 font-bold">Day 1 - 淺草巡禮 ></p>
+                <div id="home-itinerary-hint" class="mt-2 text-orange-600 font-bold">點擊開始規劃 ></div>
             </div>
             <div onclick="showPage('page-calc')" class="neo-brutal bg-orange-400 p-4 text-center">
                 <span class="text-3xl">💴</span><p class="font-black mt-1">匯率記帳</p>
             </div>
-            <div onclick="showPage('page-list')" class="neo-brutal bg-green-300 p-4 text-center">
+            <div onclick="showPage('page-list-luggage')" class="neo-brutal bg-green-300 p-4 text-center">
                 <span class="text-3xl">📦</span><p class="font-black mt-1">行李清單</p>
             </div>
-            <div class="neo-brutal bg-purple-300 p-4 text-center">
+            <div onclick="showPage('page-list-gifts')" class="neo-brutal bg-purple-300 p-4 text-center">
                 <span class="text-3xl">🎁</span><p class="font-black mt-1">伴手禮</p>
             </div>
-            <div class="neo-brutal bg-pink-300 p-4 text-center">
-                <span class="text-3xl">🐾</span><p class="font-black mt-1">動物足跡</p>
+            <div onclick="clearAllData()" class="neo-brutal bg-red-300 p-4 text-center">
+                <span class="text-3xl">🗑️</span><p class="font-black mt-1">重設資料</p>
             </div>
         </div>
     </div>
@@ -44,103 +51,165 @@
     <div id="page-itinerary" class="page">
         <button onclick="showPage('page-home')" class="mb-4 font-black">← 返回首頁</button>
         <h2 class="text-3xl font-black mb-6">旅遊時間軸 📍</h2>
-        <div class="flex space-x-3 overflow-x-auto no-scrollbar mb-8">
-            <div class="flex-none w-16 h-20 neo-brutal bg-orange-400 flex flex-col items-center justify-center font-black"><span>01</span><span>10</span></div>
-            <div class="flex-none w-16 h-20 neo-brutal bg-white flex flex-col items-center justify-center font-black"><span>01</span><span>11</span></div>
-            <div class="flex-none w-16 h-20 neo-brutal bg-white flex flex-col items-center justify-center font-black"><span>01</span><span>12</span></div>
-        </div>
-        <div class="space-y-6 border-l-4 border-black ml-4 pl-6 relative">
-            <div class="neo-brutal bg-white p-4 relative">
-                <div class="absolute -left-[38px] top-4 w-6 h-6 rounded-full bg-orange-400 border-4 border-black"></div>
-                <span class="text-sm font-black text-orange-600">12:30</span>
-                <h4 class="font-black text-lg">豪德寺看招財貓 🐱</h4>
+        <div id="itinerary-list" class="space-y-6 border-l-4 border-black ml-4 pl-6 relative">
             </div>
-            <div class="neo-brutal bg-white p-4 relative">
-                <div class="absolute -left-[38px] top-4 w-6 h-6 rounded-full bg-white border-4 border-black"></div>
-                <span class="text-sm font-black text-orange-600">18:00</span>
-                <h4 class="font-black text-lg">新宿御苑野餐 🍱</h4>
-            </div>
-        </div>
     </div>
 
     <div id="page-calc" class="page">
         <button onclick="showPage('page-home')" class="mb-4 font-black">← 返回</button>
         <div class="neo-brutal bg-black text-white p-6 mb-4">
-            <div class="text-sm font-bold text-gray-400 uppercase tracking-widest">Japanese Yen</div>
             <div class="text-4xl font-black text-orange-400">¥ <span id="jpy-val">0</span></div>
-            <div class="mt-4 border-t border-dashed border-gray-600 pt-2">
-                <span class="text-gray-400 text-xs">台幣估算 (0.21)</span>
-                <div class="text-2xl font-black">NT$ <span id="twd-val">0</span></div>
-            </div>
+            <div class="mt-2 text-2xl font-black text-white">NT$ <span id="twd-val">0</span></div>
         </div>
-        <div class="grid grid-cols-3 gap-3">
-            <button onclick="calc(1)" class="neo-brutal bg-white py-6 text-2xl font-black">1</button>
-            <button onclick="calc(2)" class="neo-brutal bg-white py-6 text-2xl font-black">2</button>
-            <button onclick="calc(3)" class="neo-brutal bg-white py-6 text-2xl font-black">3</button>
-            <button onclick="calc(4)" class="neo-brutal bg-white py-6 text-2xl font-black">4</button>
-            <button onclick="calc(5)" class="neo-brutal bg-white py-6 text-2xl font-black">5</button>
-            <button onclick="calc(6)" class="neo-brutal bg-white py-6 text-2xl font-black">6</button>
-            <button onclick="calc(7)" class="neo-brutal bg-white py-6 text-2xl font-black">7</button>
-            <button onclick="calc(8)" class="neo-brutal bg-white py-6 text-2xl font-black">8</button>
-            <button onclick="calc(9)" class="neo-brutal bg-white py-6 text-2xl font-black">9</button>
-            <button onclick="calc('C')" class="neo-brutal bg-red-400 py-6 text-2xl font-black">C</button>
-            <button onclick="calc(0)" class="neo-brutal bg-white py-6 text-2xl font-black">0</button>
-            <button onclick="alert('已存入帳本！')" class="neo-brutal bg-orange-400 py-6 text-xl font-black">SAVE</button>
+        <div class="grid grid-cols-3 gap-3 mb-6">
+            <button onclick="calc(1)" class="neo-brutal py-4 text-2xl font-black">1</button>
+            <button onclick="calc(2)" class="neo-brutal py-4 text-2xl font-black">2</button>
+            <button onclick="calc(3)" class="neo-brutal py-4 text-2xl font-black">3</button>
+            <button onclick="calc(4)" class="neo-brutal py-4 text-2xl font-black">4</button>
+            <button onclick="calc(5)" class="neo-brutal py-4 text-2xl font-black">5</button>
+            <button onclick="calc(6)" class="neo-brutal py-4 text-2xl font-black">6</button>
+            <button onclick="calc(7)" class="neo-brutal py-4 text-2xl font-black">7</button>
+            <button onclick="calc(8)" class="neo-brutal py-4 text-2xl font-black">8</button>
+            <button onclick="calc(9)" class="neo-brutal py-4 text-2xl font-black">9</button>
+            <button onclick="calc('C')" class="neo-brutal bg-red-400 py-4 text-2xl font-black">C</button>
+            <button onclick="calc(0)" class="neo-brutal py-4 text-2xl font-black">0</button>
+            <button onclick="saveExpense()" class="neo-brutal orange-accent py-4 text-xl font-black">SAVE</button>
         </div>
+        <h3 class="font-black mb-2">最近開銷：</h3>
+        <div id="expense-history" class="space-y-2"></div>
     </div>
 
-    <div id="page-list" class="page">
+    <div id="page-list-luggage" class="page">
         <button onclick="showPage('page-home')" class="mb-4 font-black">← 返回</button>
-        <h2 class="text-3xl font-black mb-6">行李清單 🎒</h2>
-        <div class="space-y-3">
-            <div onclick="toggleCheck(this)" class="neo-brutal bg-white p-4 flex justify-between items-center font-black">
-                <span>護照與簽證 🔖</span><input type="checkbox" class="w-6 h-6 border-4 border-black">
-            </div>
-            <div onclick="toggleCheck(this)" class="neo-brutal bg-white p-4 flex justify-between items-center font-black">
-                <span>行動電源 🔋</span><input type="checkbox" class="w-6 h-6 border-4 border-black">
-            </div>
-            <div onclick="toggleCheck(this)" class="neo-brutal bg-white p-4 flex justify-between items-center font-black">
-                <span>可愛動物睡衣 🐱</span><input type="checkbox" class="w-6 h-6 border-4 border-black">
-            </div>
-        </div>
+        <h2 class="text-3xl font-black mb-6">行李檢查 🎒</h2>
+        <div id="luggage-list" class="space-y-3"></div>
+    </div>
+
+    <div id="page-list-gifts" class="page">
+        <button onclick="showPage('page-home')" class="mb-4 font-black">← 返回</button>
+        <h2 class="text-3xl font-black mb-6">伴手禮清單 🎁</h2>
+        <div id="gifts-list" class="space-y-3"></div>
     </div>
 
     <div class="fixed bottom-6 left-0 right-0 px-8">
-        <button class="w-full neo-brutal bg-orange-400 py-4 text-xl font-black shadow-[8px_8px_0px_#000]">
-            ＋ 新增紀錄
+        <button onclick="handleGlobalAdd()" class="w-full neo-brutal orange-accent py-4 text-xl font-black shadow-[8px_8px_0px_#000]">
+            ＋ 新增行程 / 清單
         </button>
     </div>
 
-    <button onclick="showPage('page-calc')" class="fixed right-6 bottom-28 w-14 h-14 rounded-full neo-brutal bg-black text-white text-2xl flex items-center justify-center">
-        🧮
-    </button>
-
     <script>
-        // 切換頁面邏輯
+        // --- 初始化資料庫 ---
+        let db = JSON.parse(localStorage.getItem('travel_db')) || {
+            itinerary: [{time: "09:00", title: "抵達機場 ✈️"}],
+            expenses: [],
+            luggage: [{text: "護照", checked: false}, {text: "行動電源", checked: false}],
+            gifts: [{text: "東京芭娜娜", checked: false}]
+        };
+
+        function saveDB() {
+            localStorage.setItem('travel_db', JSON.stringify(db));
+            renderAll();
+        }
+
+        // --- 路由系統 ---
+        let currentPage = 'page-home';
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
             document.getElementById(pageId).classList.add('page-active');
+            currentPage = pageId;
             window.scrollTo(0,0);
         }
 
-        // 計算機邏輯
+        // --- 全域新增功能 ---
+        function handleGlobalAdd() {
+            if (currentPage === 'page-itinerary' || currentPage === 'page-home') {
+                const time = prompt("輸入時間 (例如 14:00):", "12:00");
+                const title = prompt("輸入行程內容:", "吃拉麵 🍜");
+                if (title) {
+                    db.itinerary.push({time, title});
+                    saveDB();
+                    showPage('page-itinerary');
+                }
+            } else if (currentPage === 'page-list-luggage') {
+                const text = prompt("新增行李物品:");
+                if (text) { db.luggage.push({text, checked: false}); saveDB(); }
+            } else if (currentPage === 'page-list-gifts') {
+                const text = prompt("新增想買的禮物:");
+                if (text) { db.gifts.push({text, checked: false}); saveDB(); }
+            } else if (currentPage === 'page-calc') {
+                alert("請直接使用計算機輸入金額後按 SAVE");
+            }
+        }
+
+        // --- 記帳功能 ---
         let jpy = "0";
-        const rate = 0.21;
         function calc(val) {
             if (val === 'C') jpy = "0";
             else if (jpy === "0") jpy = val.toString();
             else jpy += val.toString();
-            
             document.getElementById('jpy-val').innerText = jpy;
-            document.getElementById('twd-val').innerText = Math.round(parseInt(jpy) * rate);
+            document.getElementById('twd-val').innerText = Math.round(parseInt(jpy) * 0.21);
         }
 
-        // 簡單勾選互動
-        function toggleCheck(el) {
-            const cb = el.querySelector('input');
-            cb.checked = !cb.checked;
-            el.style.backgroundColor = cb.checked ? '#BBF7D0' : '#FFFFFF';
+        function saveExpense() {
+            if (jpy === "0") return;
+            const amt = Math.round(parseInt(jpy) * 0.21);
+            const note = prompt("這筆錢花在哪裡？", "一般消費");
+            db.expenses.unshift({note, jpy: jpy, twd: amt});
+            jpy = "0";
+            calc('C');
+            saveDB();
         }
+
+        // --- 渲染系統 ---
+        function renderAll() {
+            // 渲染行程
+            const itinBox = document.getElementById('itinerary-list');
+            itinBox.innerHTML = db.itinerary.map(i => `
+                <div class="neo-brutal p-4 relative mb-4">
+                    <div class="absolute -left-[38px] top-4 w-6 h-6 rounded-full bg-orange-400 border-4 border-black"></div>
+                    <span class="text-sm font-black text-orange-600">${i.time}</span>
+                    <h4 class="font-black text-lg">${i.title}</h4>
+                </div>
+            `).join('');
+
+            // 渲染清單 (行李 & 伴手禮)
+            renderChecklist('luggage-list', db.luggage);
+            renderChecklist('gifts-list', db.gifts);
+
+            // 渲染記帳歷史
+            document.getElementById('expense-history').innerHTML = db.expenses.slice(0, 5).map(e => `
+                <div class="flex justify-between p-2 border-b-2 border-black font-bold text-sm">
+                    <span>${e.note}</span>
+                    <span>¥${e.jpy} → <span class="text-orange-600">NT$${e.twd}</span></span>
+                </div>
+            `).join('');
+        }
+
+        function renderChecklist(id, dataArray) {
+            document.getElementById(id).innerHTML = dataArray.map((item, index) => `
+                <div onclick="toggleItem('${id}', ${index})" class="neo-brutal p-4 flex justify-between items-center font-black ${item.checked ? 'bg-green-200' : ''}">
+                    <span>${item.text}</span>
+                    <div class="w-6 h-6 border-4 border-black ${item.checked ? 'bg-black' : 'bg-white'}"></div>
+                </div>
+            `).join('');
+        }
+
+        function toggleItem(type, index) {
+            const key = type.split('-')[0]; // luggage or gifts
+            db[key][index].checked = !db[key][index].checked;
+            saveDB();
+        }
+
+        function clearAllData() {
+            if(confirm("確定要刪除所有旅遊規劃嗎？")) {
+                localStorage.removeItem('travel_db');
+                location.reload();
+            }
+        }
+
+        // 啟動渲染
+        renderAll();
     </script>
 </body>
 </html>
