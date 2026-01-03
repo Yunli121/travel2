@@ -3,35 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🔆 旅遊行程書 🔆</title>
+    <title>👣 旅遊行程書 👣</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700;900&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #E0F2FE; color: #1A1A1A; overflow-x: hidden; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #E0F2FE; color: #1A1A1A; }
         .neo-brutal { border: 4px solid #000; box-shadow: 6px 6px 0px #000; transition: all 0.1s; cursor: pointer; background-color: white; }
         .neo-brutal:active { box-shadow: 0px 0px 0px #000; transform: translate(4px, 4px); }
-        .page { display: none; padding-bottom: 120px; animation: fadeIn 0.3s ease-out; }
+        .page { display: none; padding-bottom: 120px; animation: fadeIn 0.2s ease-out; }
         .page-active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .orange-accent { background-color: #FF8A00; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .delete-btn { border: 2px solid #000; background: #FF4B4B; color: white; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; }
     </style>
 </head>
 <body class="p-4">
 
     <div id="page-home" class="page page-active">
-        <header class="mb-6 flex justify-between items-center">
-            <div>
-                <h1 class="text-4xl font-black italic">PANGUI! 🐶</h1>
-                <p class="font-bold text-blue-600">旅程資料已同步 ☁️</p>
-            </div>
-            <div class="neo-brutal orange-accent w-12 h-12 flex items-center justify-center font-black">JP</div>
+        <header class="mb-6">
+            <h1 class="text-4xl font-black italic">PANGUI! 🐶</h1>
+            <p class="font-bold text-blue-600">下一站：日本東京 🇯🇵</p>
         </header>
         
         <div class="grid grid-cols-2 gap-4">
             <div onclick="showPage('page-itinerary')" class="col-span-2 neo-brutal p-6 relative h-40 overflow-hidden">
                 <span class="absolute right-[-10px] bottom-[-10px] text-8xl opacity-10">🗾</span>
                 <h2 class="text-2xl font-black">查看行程表</h2>
-                <div id="home-itinerary-hint" class="mt-2 text-orange-600 font-bold">點擊開始規劃 ></div>
+                <div class="mt-2 text-orange-600 font-bold italic">GO! GO! ></div>
             </div>
             <div onclick="showPage('page-calc')" class="neo-brutal bg-orange-400 p-4 text-center">
                 <span class="text-3xl">💴</span><p class="font-black mt-1">匯率記帳</p>
@@ -50,7 +48,16 @@
 
     <div id="page-itinerary" class="page">
         <button onclick="showPage('page-home')" class="mb-4 font-black">← 返回首頁</button>
-        <h2 class="text-3xl font-black mb-6">旅遊時間軸 📍</h2>
+        <h2 class="text-3xl font-black mb-4">旅遊時間軸 📍</h2>
+        
+        <div class="flex space-x-3 overflow-x-auto no-scrollbar mb-6 pb-2">
+            <button class="flex-none w-16 h-20 neo-brutal bg-orange-400 flex flex-col items-center justify-center font-black"><span>01</span><span>10</span></button>
+            <button class="flex-none w-16 h-20 neo-brutal bg-white flex flex-col items-center justify-center font-black"><span>01</span><span>11</span></button>
+            <button class="flex-none w-16 h-20 neo-brutal bg-white flex flex-col items-center justify-center font-black"><span>01</span><span>12</span></button>
+            <button class="flex-none w-16 h-20 neo-brutal bg-white flex flex-col items-center justify-center font-black"><span>01</span><span>13</span></button>
+            <button class="flex-none w-16 h-20 neo-brutal bg-white flex flex-col items-center justify-center font-black"><span>01</span><span>14</span></button>
+        </div>
+
         <div id="itinerary-list" class="space-y-6 border-l-4 border-black ml-4 pl-6 relative">
             </div>
     </div>
@@ -73,9 +80,9 @@
             <button onclick="calc(9)" class="neo-brutal py-4 text-2xl font-black">9</button>
             <button onclick="calc('C')" class="neo-brutal bg-red-400 py-4 text-2xl font-black">C</button>
             <button onclick="calc(0)" class="neo-brutal py-4 text-2xl font-black">0</button>
-            <button onclick="saveExpense()" class="neo-brutal orange-accent py-4 text-xl font-black">SAVE</button>
+            <button onclick="saveExpense()" class="neo-brutal bg-orange-400 py-4 text-xl font-black">SAVE</button>
         </div>
-        <h3 class="font-black mb-2">最近開銷：</h3>
+        <h3 class="font-black mb-2 italic underline">EXPENSE HISTORY</h3>
         <div id="expense-history" class="space-y-2"></div>
     </div>
 
@@ -91,27 +98,34 @@
         <div id="gifts-list" class="space-y-3"></div>
     </div>
 
-    <div class="fixed bottom-6 left-0 right-0 px-8">
-        <button onclick="handleGlobalAdd()" class="w-full neo-brutal orange-accent py-4 text-xl font-black shadow-[8px_8px_0px_#000]">
-            ＋ 新增行程 / 清單
+    <div class="fixed bottom-6 left-0 right-0 px-8 flex justify-center">
+        <button onclick="handleGlobalAdd()" class="w-full max-w-sm neo-brutal bg-orange-400 py-4 text-xl font-black shadow-[8px_8px_0px_#000]">
+            ＋ 新增紀錄
         </button>
     </div>
 
     <script>
-        // --- 初始化資料庫 ---
-        let db = JSON.parse(localStorage.getItem('travel_db')) || {
+        // --- 資料管理 ---
+        let db = JSON.parse(localStorage.getItem('travel_v2')) || {
             itinerary: [{time: "09:00", title: "抵達機場 ✈️"}],
             expenses: [],
-            luggage: [{text: "護照", checked: false}, {text: "行動電源", checked: false}],
-            gifts: [{text: "東京芭娜娜", checked: false}]
+            luggage: [{text: "護照", checked: false}],
+            gifts: [{text: "薯條三兄弟", checked: false}]
         };
 
         function saveDB() {
-            localStorage.setItem('travel_db', JSON.stringify(db));
+            localStorage.setItem('travel_v2', JSON.stringify(db));
             renderAll();
         }
 
-        // --- 路由系統 ---
+        function deleteItem(type, index) {
+            if (confirm("要刪除這個項目嗎？")) {
+                db[type].splice(index, 1);
+                saveDB();
+            }
+        }
+
+        // --- 路由 ---
         let currentPage = 'page-home';
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
@@ -120,28 +134,21 @@
             window.scrollTo(0,0);
         }
 
-        // --- 全域新增功能 ---
+        // --- 功能實作 ---
         function handleGlobalAdd() {
             if (currentPage === 'page-itinerary' || currentPage === 'page-home') {
-                const time = prompt("輸入時間 (例如 14:00):", "12:00");
-                const title = prompt("輸入行程內容:", "吃拉麵 🍜");
-                if (title) {
-                    db.itinerary.push({time, title});
-                    saveDB();
-                    showPage('page-itinerary');
-                }
+                const time = prompt("時間:", "12:00");
+                const title = prompt("行程內容:");
+                if (title) { db.itinerary.push({time, title}); saveDB(); showPage('page-itinerary'); }
             } else if (currentPage === 'page-list-luggage') {
-                const text = prompt("新增行李物品:");
+                const text = prompt("新增物品:");
                 if (text) { db.luggage.push({text, checked: false}); saveDB(); }
             } else if (currentPage === 'page-list-gifts') {
-                const text = prompt("新增想買的禮物:");
+                const text = prompt("新增想買的伴手禮:");
                 if (text) { db.gifts.push({text, checked: false}); saveDB(); }
-            } else if (currentPage === 'page-calc') {
-                alert("請直接使用計算機輸入金額後按 SAVE");
             }
         }
 
-        // --- 記帳功能 ---
         let jpy = "0";
         function calc(val) {
             if (val === 'C') jpy = "0";
@@ -153,62 +160,63 @@
 
         function saveExpense() {
             if (jpy === "0") return;
-            const amt = Math.round(parseInt(jpy) * 0.21);
-            const note = prompt("這筆錢花在哪裡？", "一般消費");
-            db.expenses.unshift({note, jpy: jpy, twd: amt});
-            jpy = "0";
-            calc('C');
-            saveDB();
-        }
-
-        // --- 渲染系統 ---
-        function renderAll() {
-            // 渲染行程
-            const itinBox = document.getElementById('itinerary-list');
-            itinBox.innerHTML = db.itinerary.map(i => `
-                <div class="neo-brutal p-4 relative mb-4">
-                    <div class="absolute -left-[38px] top-4 w-6 h-6 rounded-full bg-orange-400 border-4 border-black"></div>
-                    <span class="text-sm font-black text-orange-600">${i.time}</span>
-                    <h4 class="font-black text-lg">${i.title}</h4>
-                </div>
-            `).join('');
-
-            // 渲染清單 (行李 & 伴手禮)
-            renderChecklist('luggage-list', db.luggage);
-            renderChecklist('gifts-list', db.gifts);
-
-            // 渲染記帳歷史
-            document.getElementById('expense-history').innerHTML = db.expenses.slice(0, 5).map(e => `
-                <div class="flex justify-between p-2 border-b-2 border-black font-bold text-sm">
-                    <span>${e.note}</span>
-                    <span>¥${e.jpy} → <span class="text-orange-600">NT$${e.twd}</span></span>
-                </div>
-            `).join('');
-        }
-
-        function renderChecklist(id, dataArray) {
-            document.getElementById(id).innerHTML = dataArray.map((item, index) => `
-                <div onclick="toggleItem('${id}', ${index})" class="neo-brutal p-4 flex justify-between items-center font-black ${item.checked ? 'bg-green-200' : ''}">
-                    <span>${item.text}</span>
-                    <div class="w-6 h-6 border-4 border-black ${item.checked ? 'bg-black' : 'bg-white'}"></div>
-                </div>
-            `).join('');
-        }
-
-        function toggleItem(type, index) {
-            const key = type.split('-')[0]; // luggage or gifts
-            db[key][index].checked = !db[key][index].checked;
-            saveDB();
-        }
-
-        function clearAllData() {
-            if(confirm("確定要刪除所有旅遊規劃嗎？")) {
-                localStorage.removeItem('travel_db');
-                location.reload();
+            const note = prompt("這筆錢花在哪？", "午餐");
+            if (note) {
+                db.expenses.unshift({note, jpy: jpy, twd: Math.round(parseInt(jpy) * 0.21)});
+                jpy = "0"; calc('C'); saveDB();
             }
         }
 
-        // 啟動渲染
+        function toggleCheck(type, index) {
+            db[type][index].checked = !db[type][index].checked;
+            saveDB();
+        }
+
+        // --- 渲染渲染 ---
+        function renderAll() {
+            // 行程
+            document.getElementById('itinerary-list').innerHTML = db.itinerary.map((i, idx) => `
+                <div class="neo-brutal p-4 relative mb-4 group">
+                    <div class="absolute -left-[38px] top-4 w-6 h-6 rounded-full bg-orange-400 border-4 border-black"></div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-sm font-black text-orange-600">${i.time}</span>
+                            <h4 class="font-black text-lg">${i.title}</h4>
+                        </div>
+                        <button onclick="deleteItem('itinerary', ${idx})" class="delete-btn">×</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // 記帳歷史
+            document.getElementById('expense-history').innerHTML = db.expenses.map((e, idx) => `
+                <div class="flex justify-between items-center p-3 bg-white border-2 border-black font-bold mb-2">
+                    <span class="flex-1">🍱 ${e.note}</span>
+                    <span class="mr-4 text-sm italic text-gray-500">¥${e.jpy}</span>
+                    <span class="font-black text-orange-600">NT$${e.twd}</span>
+                    <button onclick="deleteItem('expenses', ${idx})" class="ml-2 delete-btn">×</button>
+                </div>
+            `).join('');
+
+            // 清單
+            renderList('luggage-list', 'luggage', db.luggage);
+            renderList('gifts-list', 'gifts', db.gifts);
+        }
+
+        function renderList(targetId, type, data) {
+            document.getElementById(targetId).innerHTML = data.map((item, idx) => `
+                <div class="neo-brutal p-4 flex justify-between items-center font-black ${item.checked ? 'bg-green-100' : ''}">
+                    <div class="flex items-center flex-1" onclick="toggleCheck('${type}', ${idx})">
+                        <div class="w-6 h-6 border-4 border-black mr-3 ${item.checked ? 'bg-black' : 'bg-white'}"></div>
+                        <span class="${item.checked ? 'line-through text-gray-500' : ''}">${item.text}</span>
+                    </div>
+                    <button onclick="deleteItem('${type}', ${idx})" class="delete-btn">×</button>
+                </div>
+            `).join('');
+        }
+
+        function clearAllData() { if(confirm("確定重設？")) { localStorage.clear(); location.reload(); } }
+
         renderAll();
     </script>
 </body>
