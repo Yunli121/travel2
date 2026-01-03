@@ -3,207 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ORANGE INDUSTRIAL TRAVEL</title>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <title>胖吉旅遊派對 🐾</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --sky-blue: #D6EFFF;
-            --industrial-black: #1A1A1A;
-            --power-orange: #FF6B00;
-            --hard-shadow: 6px 6px 0px #000000;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700;900&display=swap');
+        
         body {
-            background-color: var(--sky-blue);
-            font-family: 'Arial Black', Gadget, sans-serif;
-            margin: 0;
-            padding: 20px;
-            color: var(--industrial-black);
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #E0F2FE; /* 藍天白雲淺藍 */
+            color: #1A1A1A;
         }
 
-        /* 粗體黑框貼紙風格 */
-        .brutal-card {
-            background: #fff;
-            border: 4px solid var(--industrial-black);
-            box-shadow: var(--hard-shadow);
-            padding: 15px;
-            margin-bottom: 20px;
-            transition: all 0.2s;
+        /* 核心風格：硬陰影與粗框線 */
+        .neo-brutal {
+            border: 4px solid #000000;
+            box-shadow: 8px 8px 0px #000000;
+            transition: all 0.2s ease;
         }
 
-        .brutal-card:active {
-            transform: translate(3px, 3px);
-            box-shadow: 2px 2px 0px #000;
+        .neo-brutal:active {
+            box-shadow: 2px 2px 0px #000000;
+            transform: translate(4px, 4px);
         }
 
-        /* 六宮格佈局 */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .hero-card {
-            grid-column: span 2;
-            background: var(--power-orange);
-            color: white;
-            height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            text-shadow: 3px 3px 0px #000;
-        }
-
-        /* 時間軸與橫向滑動日期 */
-        .date-slider {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .date-item {
-            min-width: 80px;
-            height: 40px;
-            background: #fff;
-            border: 3px solid #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 3px 3px 0px #000;
-        }
-
-        .date-item.active { background: var(--power-orange); color: white; }
-
-        /* 大按鈕計算機 */
-        .calc-header {
-            background: var(--industrial-black);
-            color: var(--power-orange);
-            padding: 20px;
-            border: 4px solid #000;
-            box-shadow: var(--hard-shadow);
-            margin-bottom: 20px;
-        }
-
-        .calc-display {
-            font-size: 2.5rem;
-            text-align: right;
-            margin-bottom: 10px;
-        }
-
-        /* 全域懸浮按鈕 */
-        .fab {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: var(--power-orange);
-            border: 4px solid #000;
-            border-radius: 50%;
-            box-shadow: 4px 4px 0px #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        /* 底部置中長條按鈕 */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            background: var(--industrial-black);
-            color: white;
-            border: 4px solid #000;
-            box-shadow: var(--hard-shadow);
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-            letter-spacing: 2px;
-            cursor: pointer;
-        }
-
-        input {
-            width: 100%;
-            box-sizing: border-box;
-            border: 3px solid #000;
-            padding: 10px;
-            font-family: inherit;
-            margin-top: 5px;
-        }
+        .orange-accent { background-color: #FF8A00; }
+        .white-bg { background-color: #FFFFFF; }
+        
+        /* 隱藏滾動條 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body>
+<body class="p-4 pb-24">
 
-    <h1 style="text-align: center; font-style: italic;">PLAN : DESTINATION</h1>
+    <header class="mb-6 flex justify-between items-center">
+        <h1 class="text-3xl font-black tracking-tighter">TRAVEL <span class="text-white bg-black px-2">PARTY</span> 🐶</h1>
+        <div class="neo-brutal orange-accent p-2 rounded-full w-12 h-12 flex items-center justify-center font-bold">
+            JP
+        </div>
+    </header>
 
-    <div class="grid-container">
-        <div class="brutal-card hero-card">行程時間軸</div>
-        <div class="brutal-card" onclick="showPage('calc')">記帳本 ￥</div>
-        <div class="brutal-card" onclick="showPage('pack')">行李清單</div>
-        <div class="brutal-card">伴手禮</div>
-        <div class="brutal-card">旅遊筆記</div>
+    <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="col-span-2 neo-brutal white-bg p-6 relative overflow-hidden h-40">
+            <div class="absolute right-[-10px] top-[-10px] text-8xl opacity-20">✈️</div>
+            <h2 class="text-2xl font-black mb-1">東京冒險計畫</h2>
+            <p class="text-gray-600">2026.01.10 - 01.15</p>
+            <div class="mt-4 inline-block bg-blue-400 text-white px-3 py-1 neo-brutal text-sm">進行中</div>
+        </div>
+
+        <div class="neo-brutal bg-yellow-300 p-4 flex flex-col items-center justify-center text-center">
+            <span class="text-3xl mb-2">💴</span>
+            <p class="font-black text-sm">日幣記帳</p>
+        </div>
+
+        <div class="neo-brutal bg-green-300 p-4 flex flex-col items-center justify-center text-center">
+            <span class="text-3xl mb-2">🎁</span>
+            <p class="font-black text-sm">伴手禮</p>
+        </div>
+
+        <div class="neo-brutal bg-purple-300 p-4 flex flex-col items-center justify-center text-center">
+            <span class="text-3xl mb-2">📦</span>
+            <p class="font-black text-sm">行李清單</p>
+        </div>
+
+        <div class="neo-brutal bg-pink-300 p-4 flex flex-col items-center justify-center text-center">
+            <span class="text-3xl mb-2">📸</span>
+            <p class="font-black text-sm">回憶相簿</p>
+        </div>
     </div>
 
-    <hr style="border: 2px solid #000; margin: 30px 0;">
-
-    <div id="itinerary-section">
-        <div class="date-slider">
-            <div class="date-item active">D1</div>
-            <div class="date-item">D2</div>
-            <div class="date-item">D3</div>
-            <div class="date-item">D4</div>
-            <div class="date-item">D5</div>
-        </div>
-
-        <div class="brutal-card" style="border-left: 15px solid var(--power-orange);">
-            <div style="color: #666;">09:00 AM</div>
-            <div>成田機場接駁</div>
-        </div>
-        <div class="brutal-card" style="border-left: 15px solid var(--industrial-black);">
-            <div style="color: #666;">12:30 PM</div>
-            <div>新宿拉麵一蘭</div>
+    <div class="mb-4">
+        <h3 class="text-xl font-black mb-3">行程時間軸 📅</h3>
+        <div class="flex space-x-3 overflow-x-auto no-scrollbar pb-4">
+            <div class="flex-none w-16 h-20 neo-brutal orange-accent flex flex-col items-center justify-center">
+                <span class="text-xs">Jan</span><span class="text-xl">10</span>
+            </div>
+            <div class="flex-none w-16 h-20 neo-brutal white-bg flex flex-col items-center justify-center">
+                <span class="text-xs">Jan</span><span class="text-xl">11</span>
+            </div>
+            <div class="flex-none w-16 h-20 neo-brutal white-bg flex flex-col items-center justify-center">
+                <span class="text-xs">Jan</span><span class="text-xl">12</span>
+            </div>
+            <div class="flex-none w-16 h-20 neo-brutal white-bg flex flex-col items-center justify-center">
+                <span class="text-xs">Jan</span><span class="text-xl">13</span>
+            </div>
         </div>
     </div>
 
-    <div class="fab" onclick="toggleQuickCalc()">￥</div>
+    <div class="space-y-4 border-l-4 border-black ml-4 pl-6">
+        <div class="relative neo-brutal white-bg p-4 mb-4">
+            <div class="absolute -left-[38px] top-4 w-6 h-6 rounded-full orange-accent border-4 border-black"></div>
+            <span class="text-sm font-black text-orange-600">09:00</span>
+            <p class="font-bold">成田機場接駁 🚌</p>
+        </div>
+        <div class="relative neo-brutal white-bg p-4 mb-4">
+            <div class="absolute -left-[38px] top-4 w-6 h-6 rounded-full bg-white border-4 border-black"></div>
+            <span class="text-sm font-black text-orange-600">12:30</span>
+            <p class="font-bold">淺草寺雷門大餐 🍜</p>
+        </div>
+    </div>
 
-    <div class="bottom-nav" id="mainAddBtn">+ 新增紀錄</div>
+    <div class="fixed bottom-6 left-0 right-0 px-8">
+        <button class="w-full neo-brutal orange-accent py-4 text-xl font-black flex items-center justify-center gap-2">
+            <span>＋</span> 新增行程項目
+        </button>
+    </div>
 
-    <script>
-        // --- Firebase 設定 ---
-        const firebaseConfig = {
-            apiKey: "你的API_KEY",
-            databaseURL: "你的DATABASE_URL",
-            projectId: "你的PROJECT_ID",
-        };
-        // firebase.initializeApp(firebaseConfig);
-        // const db = firebase.database();
+    <button class="fixed right-6 bottom-28 w-14 h-14 rounded-full neo-brutal bg-black text-white text-2xl flex items-center justify-center">
+        🧮
+    </button>
 
-        // 簡易匯率換算邏輯
-        const JPY_RATE = 0.22; // 假設匯率
-        function toggleQuickCalc() {
-            const jpy = prompt("輸入日幣金額:");
-            if(jpy) {
-                const twd = Math.round(jpy * JPY_RATE);
-                alert(`約合台幣: $${twd}`);
-                // 此處可擴充寫入 Firebase
-            }
-        }
-
-        // 動態效果
-        document.getElementById('mainAddBtn').addEventListener('click', () => {
-            alert("正在與 Firebase 同步新項目...");
-        });
-    </script>
 </body>
 </html>
